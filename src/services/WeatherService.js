@@ -4,22 +4,22 @@ export default class WeatherService {
     this.baseURL = 'http://api.weatherapi.com/v1';
   }
 
-  // TODO: create generic function for all fetch requests
-
-  async getForecast(coords, days = 1) {
+  async getForecast(location, days = 1, type = 'forecast', lang = 'en') {
     try {
-      const path = `${this.baseURL}/forecast.json?key=${this.apiKey}&q=${coords.lat},${coords.lng}&days=${days}&aqi=no&alerts=no`;
-      const response = await fetch(path);
+      if (!location) {
+        throw new Error('You should specify the location to get a forecast.');
+      }
+      const query = `${this.baseURL}/${type}.json?key=${this.apiKey}&q=${location}&days=${days}&aqi=no&alerts=no&tides=no&lang=${lang}`;
+      const response = await fetch(query);
       if (!response.ok) {
         throw new Error(
-          `Could not fetch from ${path} - received status ${response.status}`
+          `Could not fetch from ${query} - received status ${response.status}`
         );
       }
       const data = await response.json();
-      console.log('Data from forecast', data);
       return data;
     } catch (err) {
-      console.error(`${err}`);
+      console.error(err);
     }
   }
 }

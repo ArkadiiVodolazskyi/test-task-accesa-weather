@@ -3,77 +3,81 @@
     <div class="wrapper">
       <h1>Accessa Weather</h1>
       <ForecastDay
-        :WeatherService="WeatherService"
-        :currentLocation="currentLocation"
+        v-for="forecast in forecasts"
+        :hours="forecast.forecast.forecastday[0].hour"
       ></ForecastDay>
+      <ForecastWeek
+        v-for="forecast in forecasts"
+        :days="forecast.forecast.forecastday"
+      >
+      </ForecastWeek>
     </div>
   </main>
 </template>
 
 <script>
+import GeolocationService from './services/GeolocationService';
+import LanguageService from './services/LanguageService';
 import WeatherService from './services/WeatherService';
-const WeatherServiceAPI = new WeatherService();
 
 import ForecastDay from './components/ForecastDay.vue';
+import ForecastWeek from './components/ForecastWeek.vue';
+
+const GeolocationServiceAPI = new GeolocationService();
+const LanguageServiceAPI = new LanguageService();
+const WeatherServiceAPI = new WeatherService();
 
 export default {
+  components: { ForecastDay, ForecastWeek },
   data() {
     return {
-      language: 'en',
-      currentLocation: null,
-      locations: [],
-      components: [ForecastDay],
-      WeatherService: WeatherServiceAPI,
+      language: null, // TODO: By default, user's browser language is used for getting initial forecast
+      currentLocation: null, // By default, current user location is used for getting initial forecast
+      locations: [], // Locations, that were specified by the user
+      forecasts: [], // Forecasts for each location, received from API
     };
   },
   methods: {
-    // TODO: move the functionality to get location to a separate service
-    // TODO: test in Chrome
-    // TODO: move Geolocation logic to GeolocationService.js
     getLocation() {
-      navigator.geolocation.getCurrentPosition(
-        this.getGeoSuccess,
-        this.getGeoFail,
-        {
-          enableHighAccuracy: false,
-          timeout: 3000,
-          maximumAge: 1000 * 60 * 5,
-        }
+      GeolocationServiceAPI.getLocation((position) => {
+        const location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          acc: position.coords.accuracy,
+          timestamp: position.timestamp,
+        };
+        this.currentLocation = location;
+      });
+    },
+    getLanguage() {
+      this.language = LanguageServiceAPI.language;
+    },
+    async getWeekForecast(location) {
+      const weekForecast = await WeatherServiceAPI.getForecast(
+        location,
+        7,
+        'forecast',
+        this.language
       );
+      this.forecasts.push(weekForecast);
     },
-    async getCachedLocation(cacheLifeSeconds = 300) {
-      const cachedLocationString = localStorage.getItem('currentLocation');
-      if (!cachedLocationString) return this.getLocation();
-      const cachedLocation = await JSON.parse(cachedLocationString);
-      const lastCachedSeconds = cachedLocation.timestamp / 1000;
-      if (lastCachedSeconds < cacheLifeSeconds)
-        return (this.currentLocation = cachedLocation);
-      this.getLocation();
-    },
-    getGeoSuccess(position) {
-      const location = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        acc: position.coords.accuracy,
-        timestamp: position.timestamp,
-      };
-      this.currentLocation = location;
-      localStorage.setItem('currentLocation', JSON.stringify(location));
-      console.info(`Location has been cached.`);
-    },
-    getGeoFail(err) {
-      if (err.code === 1) {
-        alert('Please, allow using your geoposition.');
-        // TODO: add quick links to browser settings
-        // f.e. Firefox: about:preferences#privacy
-        // Chrome: ...
+  },
+  created() {
+    this.getLocation();
+    this.getLanguage();
+
+    if (this.currentLocation) {
+      const { lat, lng } = this.currentLocation;
+      this.getWeekForecast(`${lat}, ${lng}`);
+    }
+  },
+  watch: {
+    currentLocation() {
+      if (this.currentLocation) {
+        const { lat, lng } = this.currentLocation;
+        this.getWeekForecast(`${lat}, ${lng}`);
       }
     },
   },
-  mounted() {
-    this.getCachedLocation();
-    this.language = navigator.language;
-  },
-  components: { ForecastDay },
 };
 </script>
