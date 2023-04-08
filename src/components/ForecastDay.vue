@@ -27,7 +27,6 @@ export default {
       return hoursArray
         .filter((hour) => {
           const hourTimestamp = new Date(hour.time);
-          console.log(hourAgoTimestamp, hourTimestamp, inTwelveHoursTimestamp);
           return (
             hourTimestamp >= hourAgoTimestamp &&
             hourTimestamp <= inTwelveHoursTimestamp

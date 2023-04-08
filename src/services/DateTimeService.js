@@ -15,6 +15,11 @@ export default class DateTimeService {
           minute: '2-digit',
         };
         break;
+      case 'weekday-short':
+        timeFormatOptions = {
+          weekday: 'short',
+        };
+        break;
       case 'time':
         timeFormatOptions = {
           hour: '2-digit',
