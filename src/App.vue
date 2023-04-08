@@ -7,6 +7,7 @@
         v-for="forecast in forecasts"
         :forecast="forecast"
         :language="language"
+        @delete-location="handleDeleteLocation"
       />
     </div>
   </main>
@@ -59,6 +60,11 @@ export default {
     },
     handleAddLocation(location) {
       this.getWeekForecast(location);
+    },
+    handleDeleteLocation(locationName) {
+      this.forecasts = this.forecasts.filter(
+        (forecast) => forecast.location.name !== locationName
+      );
     },
   },
   created() {
