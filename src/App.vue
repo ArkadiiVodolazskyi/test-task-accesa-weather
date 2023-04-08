@@ -2,15 +2,7 @@
   <main>
     <div class="wrapper">
       <h1>Accessa Weather</h1>
-      <ForecastDay
-        v-for="forecast in forecasts"
-        :hours="forecast.forecast.forecastday[0].hour"
-      ></ForecastDay>
-      <ForecastWeek
-        v-for="forecast in forecasts"
-        :days="forecast.forecast.forecastday"
-      >
-      </ForecastWeek>
+      <LocationWeather v-for="forecast in forecasts" :forecast="forecast" :language="language"></LocationWeather>
     </div>
   </main>
 </template>
@@ -20,18 +12,17 @@ import GeolocationService from './services/GeolocationService';
 import LanguageService from './services/LanguageService';
 import WeatherService from './services/WeatherService';
 
-import ForecastDay from './components/ForecastDay.vue';
-import ForecastWeek from './components/ForecastWeek.vue';
+import LocationWeather from './components/LocationWeather.vue';
 
 const GeolocationServiceAPI = new GeolocationService();
 const LanguageServiceAPI = new LanguageService();
 const WeatherServiceAPI = new WeatherService();
 
 export default {
-  components: { ForecastDay, ForecastWeek },
+  components: { LocationWeather },
   data() {
     return {
-      language: null, // TODO: By default, user's browser language is used for getting initial forecast
+      language: null, // By default, user's browser language is used for getting initial forecast
       currentLocation: null, // By default, current user location is used for getting initial forecast
       locations: [], // Locations, that were specified by the user
       forecasts: [], // Forecasts for each location, received from API

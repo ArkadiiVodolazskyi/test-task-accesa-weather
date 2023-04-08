@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: show Spinner if forecastData is null -->
   <div class="forecast day">
     <h2>Forecast for next 24 hours</h2>
     <ul class="weather-grid">
