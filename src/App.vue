@@ -8,6 +8,7 @@
         :forecast="forecast"
         :language="language"
         @delete-location="handleDeleteLocation"
+        @favourite-location="handleFavouriteLocation"
       />
     </div>
   </main>
@@ -32,6 +33,7 @@ export default {
       language: null, // By default, user's browser language is used for getting initial forecast
       currentLocation: null, // By default, current user location is used for getting initial forecast
       forecasts: [], // Forecasts for each location, received from API
+      favouriteLocations: new Set(),
     };
   },
   methods: {
@@ -66,6 +68,30 @@ export default {
         (forecast) => forecast.location.name !== locationName
       );
     },
+    handleFavouriteLocation(locationName, newFavouriteState) {
+      if (
+        this.favouriteLocations.has(locationName) &&
+        newFavouriteState === false
+      ) {
+        this.favouriteLocations.delete(locationName);
+      } else {
+        this.favouriteLocations.add(locationName);
+      }
+      this.updateLocalFavourites();
+    },
+    updateLocalFavourites() {
+      const favouriteLocationsJSON = JSON.stringify([
+        ...this.favouriteLocations,
+      ]);
+      localStorage.setItem('favouriteLocations', favouriteLocationsJSON);
+    },
+    async loadLocalFavourites() {
+      const localFavouritesJSON = localStorage.getItem('favouriteLocations');
+      const localFavourites =
+        localFavouritesJSON && (await JSON.parse(localFavouritesJSON));
+      this.favouriteLocations =
+        localFavourites.length && new Set([...localFavourites]);
+    },
   },
   created() {
     this.getLocation();
@@ -75,6 +101,8 @@ export default {
       const { lat, lng } = this.currentLocation;
       this.getWeekForecast(`${lat}, ${lng}`);
     }
+
+    this.loadLocalFavourites();
   },
   watch: {
     currentLocation() {

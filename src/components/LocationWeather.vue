@@ -7,7 +7,14 @@
     />
     <ForecastDay :hours="hours" :DateTimeFormatter="DateTimeFormatter" />
     <ForecastWeek :days="days" :DateTimeFormatter="DateTimeFormatter" />
-    <button @click="deleteLocation">x</button>
+    <button class="delete-location" @click="deleteLocation">⤫</button>
+    <button
+      class="toggle-favourite"
+      :data-isFavourite="isFavourite"
+      @click="toggleFavourite"
+    >
+      ★
+    </button>
   </div>
 </template>
 
@@ -20,13 +27,15 @@ import CurrentWeather from './CurrentWeather.vue';
 
 export default {
   components: { ForecastDay, ForecastWeek, CurrentWeather },
-  props: ['forecast', 'language'],
-  emits: ['delete-location'],
+  props: ['forecast'],
+  emits: ['delete-location', 'favourite-location'],
   data() {
     return {
       DateTimeFormatter: null,
       days: [],
       hours: [],
+      isFavourite: false,
+      // TODO: add isActive: active shows full forecast and its current weather and time specify the app theme
     };
   },
   created() {
@@ -46,6 +55,17 @@ export default {
         `Are you sure you want to stop watching weather in ${locationName}?`
       ) && this.$emit('delete-location', locationName);
     },
+    toggleFavourite() {
+      const locationName = this.forecast.location.name;
+      const newFavouriteState = !this.isFavourite;
+      this.isFavourite = newFavouriteState;
+      this.$emit('favourite-location', locationName, newFavouriteState);
+    },
   },
 };
 </script>
+
+<style lang="sass">
+[data-isFavourite='true']
+  color: yellow
+</style>
