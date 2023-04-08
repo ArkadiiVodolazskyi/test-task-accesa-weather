@@ -2,6 +2,7 @@
   <main>
     <div class="wrapper">
       <h1>Accessa Weather</h1>
+      <AddLocation @add-location="handleAddLocation" />
       <LocationWeather
         v-for="forecast in forecasts"
         :forecast="forecast"
@@ -16,6 +17,7 @@ import GeolocationService from './services/GeolocationService';
 import LanguageService from './services/LanguageService';
 import WeatherService from './services/WeatherService';
 
+import AddLocation from './components/AddLocation.vue';
 import LocationWeather from './components/LocationWeather.vue';
 
 const GeolocationServiceAPI = new GeolocationService();
@@ -23,12 +25,11 @@ const LanguageServiceAPI = new LanguageService();
 const WeatherServiceAPI = new WeatherService();
 
 export default {
-  components: { LocationWeather },
+  components: { AddLocation, LocationWeather },
   data() {
     return {
       language: null, // By default, user's browser language is used for getting initial forecast
       currentLocation: null, // By default, current user location is used for getting initial forecast
-      locations: [], // Locations, that were specified by the user
       forecasts: [], // Forecasts for each location, received from API
     };
   },
@@ -55,6 +56,9 @@ export default {
         this.language
       );
       this.forecasts.push(weekForecast);
+    },
+    handleAddLocation(location) {
+      this.getWeekForecast(location);
     },
   },
   created() {
