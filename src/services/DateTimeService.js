@@ -29,7 +29,6 @@ export default class DateTimeService {
       this.language,
       timeFormatOptions
     ).format(date);
-    console.log(type, timeFormatOptions, formattedTime);
     return formattedTime;
   };
 }

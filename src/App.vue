@@ -2,7 +2,11 @@
   <main>
     <div class="wrapper">
       <h1>Accessa Weather</h1>
-      <LocationWeather v-for="forecast in forecasts" :forecast="forecast" :language="language"></LocationWeather>
+      <LocationWeather
+        v-for="forecast in forecasts"
+        :forecast="forecast"
+        :language="language"
+      />
     </div>
   </main>
 </template>
