@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  props: ['days'],
+  props: ['days', 'DateTimeFormatter'],
   data() {
     return {};
   },

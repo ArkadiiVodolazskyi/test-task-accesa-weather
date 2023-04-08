@@ -4,48 +4,38 @@
     <div class="day-info">
       <strong>Today</strong>
       |
-      {{ getFormattedTime(currentTime, 'weekday-time') }}
+      {{ DateTimeFormatter.format(currentTime, 'weekday-time') }}
     </div>
     <div class="time-info">
       <img class="weather-icon" :src="forecast.current.condition.icon" />
       <strong>{{ forecast.current.temp_c }}°C</strong>
       <small class="last-updated"
-        >Last updated: {{ getFormattedTime(lastUpdatedTime, 'time') }}</small
+        >Last updated:
+        {{ DateTimeFormatter.format(lastUpdatedTime, 'time') }}</small
       >
     </div>
   </div>
 </template>
 
 <script>
-import DateTimeService from '../services/DateTimeService';
-
 export default {
-  props: ['forecast', 'language'],
+  props: ['forecast', 'DateTimeFormatter'],
   data() {
     return {
-      DateTimeFormatter: null,
       currentTime: null,
-      timeZone: null,
       lastUpdatedTime: null,
     };
   },
   created() {
-    const DateTimeFormatter = new DateTimeService(this.language);
-    this.DateTimeFormatter = DateTimeFormatter;
-
-    const { localtime: currentTime, tz_id: timeZone } = this.forecast.location;
+    const { localtime: currentTime } = this.forecast.location;
     const { last_updated: lastUpdatedTime } = this.forecast.current;
     this.currentTime = currentTime;
-    this.timeZone = timeZone;
     this.lastUpdatedTime = lastUpdatedTime;
   },
   methods: {
     getFullLocation() {
       const { country, region, name } = this.forecast.location;
       return `${country}, ${region}, ${name}`;
-    },
-    getFormattedTime(time_string, type) {
-      return this.DateTimeFormatter.format(time_string, type, this.timeZone);
     },
   },
 };

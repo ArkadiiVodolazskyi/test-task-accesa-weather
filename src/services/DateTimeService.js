@@ -1,16 +1,15 @@
 export default class DateTimeService {
-  constructor(language) {
+  constructor(language, timeZone) {
     this.language = language;
+    this.timeZone = timeZone;
   }
 
-  format = (time_string, type, timeZone) => {
+  format = (time_string, type) => {
     const date = new Date(time_string);
     let timeFormatOptions = {};
     switch (type) {
       case 'weekday-time':
         timeFormatOptions = {
-          timeZone,
-          hour12: false,
           weekday: 'long',
           hour: '2-digit',
           minute: '2-digit',
@@ -18,13 +17,12 @@ export default class DateTimeService {
         break;
       case 'time':
         timeFormatOptions = {
-          timeZone,
-          hour12: false,
           hour: '2-digit',
           minute: '2-digit',
         };
         break;
     }
+    timeFormatOptions.timeZone = this.timeZone;
     const formattedTime = new Intl.DateTimeFormat(
       this.language,
       timeFormatOptions
