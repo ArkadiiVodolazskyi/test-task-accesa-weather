@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { toRaw } from 'vue';
+
 import GeolocationService from './services/GeolocationService';
 import LanguageService from './services/LanguageService';
 import WeatherService from './services/WeatherService';
@@ -33,7 +35,6 @@ export default {
       language: null, // By default, user's browser language is used for getting initial forecast
       currentLocation: null, // By default, current user location is used for getting initial forecast
       forecasts: [], // Forecasts for each location, received from API
-      favouriteLocations: new Set(),
     };
   },
   methods: {
@@ -51,13 +52,16 @@ export default {
     getLanguage() {
       this.language = LanguageServiceAPI.language;
     },
-    async getWeekForecast(location) {
+    async getWeekForecast(location, isFavourite = false) {
       const weekForecast = await WeatherServiceAPI.getForecast(
         location,
         7,
         'forecast',
         this.language
       );
+
+      if (this.checkLocationUsed(weekForecast.location.name)) return;
+      if (isFavourite) weekForecast.isFavourite = true;
       this.forecasts.push(weekForecast);
     },
     handleAddLocation(location) {
@@ -69,40 +73,44 @@ export default {
       );
     },
     handleFavouriteLocation(locationName, newFavouriteState) {
-      if (
-        this.favouriteLocations.has(locationName) &&
-        newFavouriteState === false
-      ) {
-        this.favouriteLocations.delete(locationName);
-      } else {
-        this.favouriteLocations.add(locationName);
-      }
+      this.forecasts.find(
+        (forecast) => forecast.location.name === locationName
+      ).isFavourite = newFavouriteState;
       this.updateLocalFavourites();
     },
     updateLocalFavourites() {
-      const favouriteLocationsJSON = JSON.stringify([
-        ...this.favouriteLocations,
-      ]);
+      const favForecasts = toRaw(this.forecasts)
+        .filter((forecast) => forecast.isFavourite)
+        .map((favForecast) => favForecast.location.name);
+
+      const favouriteLocationsJSON = JSON.stringify(favForecasts);
       localStorage.setItem('favouriteLocations', favouriteLocationsJSON);
     },
     async loadLocalFavourites() {
       const localFavouritesJSON = localStorage.getItem('favouriteLocations');
       const localFavourites =
         localFavouritesJSON && (await JSON.parse(localFavouritesJSON));
-      this.favouriteLocations =
-        localFavourites.length && new Set([...localFavourites]);
+
+      localFavourites.forEach((locationName) =>
+        this.getWeekForecast(locationName, true)
+      );
+    },
+    checkLocationUsed(locationName) {
+      const locationUsed = this.forecasts.find(
+        (forecast) => forecast.location.name === locationName
+      );
+      return locationUsed;
     },
   },
   created() {
     this.getLocation();
     this.getLanguage();
+    this.loadLocalFavourites();
 
     if (this.currentLocation) {
       const { lat, lng } = this.currentLocation;
       this.getWeekForecast(`${lat}, ${lng}`);
     }
-
-    this.loadLocalFavourites();
   },
   watch: {
     currentLocation() {

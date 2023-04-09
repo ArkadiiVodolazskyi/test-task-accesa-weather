@@ -1,6 +1,6 @@
 <template>
   <!-- TODO: show Spinner if forecastData is null -->
-  <div class="location-weather">
+  <div class="location-weather" :data-isFavourite="isFavourite">
     <CurrentWeather
       :forecast="forecast"
       :DateTimeFormatter="DateTimeFormatter"
@@ -8,13 +8,7 @@
     <ForecastDay :hours="hours" :DateTimeFormatter="DateTimeFormatter" />
     <ForecastWeek :days="days" :DateTimeFormatter="DateTimeFormatter" />
     <button class="delete-location" @click="deleteLocation">⤫</button>
-    <button
-      class="toggle-favourite"
-      :data-isFavourite="isFavourite"
-      @click="toggleFavourite"
-    >
-      ★
-    </button>
+    <button class="toggle-favourite" @click="toggleFavourite">★</button>
   </div>
 </template>
 
@@ -34,7 +28,7 @@ export default {
       DateTimeFormatter: null,
       days: [],
       hours: [],
-      isFavourite: false,
+      isFavourite: this.forecast.isFavourite,
       // TODO: add isActive: active shows full forecast and its current weather and time specify the app theme
     };
   },
@@ -66,6 +60,6 @@ export default {
 </script>
 
 <style lang="sass">
-[data-isFavourite='true']
+[data-isFavourite='true'] .toggle-favourite
   color: yellow
 </style>
