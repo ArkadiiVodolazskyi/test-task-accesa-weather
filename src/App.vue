@@ -4,11 +4,13 @@
       <h1>Accessa Weather</h1>
       <AddLocation @add-location="handleAddLocation" />
       <LocationWeather
-        v-for="forecast in forecasts"
+        v-for="(forecast, index) in forecasts"
         :forecast="forecast"
         :language="language"
+        :isActive="index === activeForecastIndex"
         @delete-location="handleDeleteLocation"
         @favourite-location="handleFavouriteLocation"
+        @active-location="setActiveForecast"
       />
     </div>
   </main>
@@ -35,6 +37,7 @@ export default {
       language: null, // By default, user's browser language is used for getting initial forecast
       currentLocation: null, // By default, current user location is used for getting initial forecast
       forecasts: [], // Forecasts for each location, received from API
+      activeForecastIndex: 0,
     };
   },
   methods: {
@@ -59,9 +62,9 @@ export default {
         'forecast',
         this.language
       );
-
       if (this.checkLocationUsed(weekForecast.location.name)) return;
-      if (isFavourite) weekForecast.isFavourite = true;
+
+      weekForecast.isFavourite = isFavourite;
       this.forecasts.push(weekForecast);
     },
     handleAddLocation(location) {
@@ -101,12 +104,18 @@ export default {
       );
       return locationUsed;
     },
+    setActiveForecast(locationName) {
+      const newActiveForecastIndex = this.forecasts.findIndex(
+        (forecast) => forecast.location.name === locationName
+      );
+      this.activeForecastIndex = newActiveForecastIndex;
+    },
   },
   created() {
     this.getLocation();
     this.getLanguage();
-    this.loadLocalFavourites();
 
+    this.loadLocalFavourites();
     if (this.currentLocation) {
       const { lat, lng } = this.currentLocation;
       this.getWeekForecast(`${lat}, ${lng}`);

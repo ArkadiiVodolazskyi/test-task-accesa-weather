@@ -1,14 +1,19 @@
 <template>
   <!-- TODO: show Spinner if forecastData is null -->
-  <div class="location-weather" :data-isFavourite="isFavourite">
+  <div
+    class="location-weather"
+    :data-is-favourite="isFavourite"
+    :data-is-active="isActive"
+  >
     <CurrentWeather
       :forecast="forecast"
       :DateTimeFormatter="DateTimeFormatter"
     />
     <ForecastDay :hours="hours" :DateTimeFormatter="DateTimeFormatter" />
     <ForecastWeek :days="days" :DateTimeFormatter="DateTimeFormatter" />
-    <button class="delete-location" @click="deleteLocation">⤫</button>
+    <button class="delete-location" @click="deleteLocation">✘</button>
     <button class="toggle-favourite" @click="toggleFavourite">★</button>
+    <button class="set-active" @click="setActive">❯</button>
   </div>
 </template>
 
@@ -21,8 +26,8 @@ import CurrentWeather from './CurrentWeather.vue';
 
 export default {
   components: { ForecastDay, ForecastWeek, CurrentWeather },
-  props: ['forecast'],
-  emits: ['delete-location', 'favourite-location'],
+  props: ['forecast', 'language', 'isActive'],
+  emits: ['delete-location', 'favourite-location', 'active-location'],
   data() {
     return {
       DateTimeFormatter: null,
@@ -55,11 +60,19 @@ export default {
       this.isFavourite = newFavouriteState;
       this.$emit('favourite-location', locationName, newFavouriteState);
     },
+    setActive() {
+      const locationName = this.forecast.location.name;
+      this.$emit('active-location', locationName);
+    },
   },
 };
 </script>
 
 <style lang="sass">
-[data-isFavourite='true'] .toggle-favourite
-  color: yellow
+[data-is-favourite='true']
+  .toggle-favourite
+    color: yellow
+[data-is-active='true']
+  .set-active
+    color: green
 </style>
