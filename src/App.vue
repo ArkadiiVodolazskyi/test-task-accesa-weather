@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="acessa-weather">
     <div class="wrapper">
       <h1>Accessa Weather</h1>
       <AddLocation @add-location="handleAddLocation" />
@@ -66,6 +66,8 @@ export default {
 
       weekForecast.isFavourite = isFavourite;
       this.forecasts.push(weekForecast);
+
+      this.updateActiveDay();
     },
     handleAddLocation(location) {
       this.getWeekForecast(location);
@@ -110,6 +112,13 @@ export default {
       );
       this.activeForecastIndex = newActiveForecastIndex;
     },
+    updateActiveDay() {
+      const isDay = this.forecasts.length
+        ? this.forecasts[this.activeForecastIndex].current.is_day === 1
+        : null;
+      const themeName = isDay ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', themeName);
+    },
   },
   created() {
     this.getLocation();
@@ -128,6 +137,11 @@ export default {
         this.getWeekForecast(`${lat}, ${lng}`);
       }
     },
+    activeForecastIndex() {
+      this.updateActiveDay();
+    },
   },
 };
 </script>
+
+<style lang="sass"></style>

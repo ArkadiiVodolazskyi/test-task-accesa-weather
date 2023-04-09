@@ -1,6 +1,23 @@
+/* TODO: choose colors / color theme */
+:root,
+:root[data-theme='light'] {
+  --bg-main: white;
+  --tx-main: black;
+  --acc-main: black;
+}
+:root[data-theme='dark'] {
+  --bg-main: black;
+  --tx-main: white;
+  --acc-main: white;
+}
+
 html {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
+  /* TODO: nice background images for day and night */
+  background-color: var(--bg-main);
+  color: var(--tx-main);
+  accent-color: var(--acc-main);
 }
 
 #app {
