@@ -11,6 +11,7 @@
     />
     <ForecastDay :hours="hours" :DateTimeFormatter="DateTimeFormatter" />
     <ForecastWeek :days="days" :DateTimeFormatter="DateTimeFormatter" />
+    <!-- TODO: move buttons to CurrentWeather -->
     <button class="delete-location" @click="deleteLocation">✘</button>
     <button class="toggle-favourite" @click="toggleFavourite">★</button>
     <button class="set-active" @click="setActive">❯</button>
@@ -69,6 +70,10 @@ export default {
 </script>
 
 <style lang="sass">
+.location-weather
+  display: flex
+  flex-direction: column
+  gap: 1em
 [data-is-favourite='true']
   .toggle-favourite
     color: yellow

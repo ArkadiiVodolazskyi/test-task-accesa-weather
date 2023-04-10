@@ -1,6 +1,6 @@
 export default class WeatherService {
   constructor() {
-    this.apiKey = '28b6f11cef9849dbb7b204519230304';
+    this.apiKey = '28b6f11cef9849dbb7b204519230304'; // TODO: use env
     this.baseURL = 'http://api.weatherapi.com/v1';
   }
 

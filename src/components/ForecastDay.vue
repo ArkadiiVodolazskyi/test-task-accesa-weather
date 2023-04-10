@@ -1,15 +1,3 @@
-<template>
-  <div class="forecast day">
-    <h2>Forecast for next 24 hours</h2>
-    <ul class="weather-grid">
-      <li v-if="hours.length" v-for="hour in this.cutHours(hours)">
-        <span>{{ hour.temp_c }}°</span>
-        <span>{{ DateTimeFormatter.format(hour.time, 'time') }}</span>
-      </li>
-    </ul>
-  </div>
-</template>
-
 <script>
 export default {
   props: ['hours', 'DateTimeFormatter'],
@@ -37,3 +25,26 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="forecast day">
+    <ul class="weather-grid">
+      <li
+        v-if="hours.length"
+        v-for="(hour, index) in this.cutHours(hours)"
+        class="weather-piece weather-hour"
+        :class="{ current: index === 0 }"
+      >
+        <time class="time">{{
+          DateTimeFormatter.format(hour.time, 'time')
+        }}</time>
+        <p class="temp">{{ hour.temp_c }}°</p>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<style lang="sass">
+.time
+  white-space: pre
+</style>

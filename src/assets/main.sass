@@ -1,0 +1,65 @@
+:root,
+:root[data-theme='light']
+  --tx-main: hsl(0 0% 95%)
+  --acc-main: 197 95% 60%
+  --acc-main-2: 169 100% 35%
+
+:root[data-theme='dark']
+  --acc-main: 210 100% 25%
+  --acc-main-2: 300 84% 19%
+
+html
+  font-family: 'Roboto', sans-serif
+  font-size: 16px
+  color: var(--tx-main)
+  accent-color: var(--acc-main)
+
+body
+  line-height: 1.3
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
+  font-family: 'Montserrat', sans-serif
+
+ul
+  padding: 0
+
+li
+  list-style: none
+
+a
+  text-decoration: none
+
+.weather-grid
+  max-width: 90%
+  margin: 0 auto
+  text-align: center
+  display: grid
+  grid-template-columns: repeat(7, 1fr)
+  align-items: center
+  gap: .5em
+  & .temp
+    font-size: 1.2em
+    font-weight: 500
+  & .temp-min
+    font-size: 1em
+    opacity: 0.8
+
+.weather-piece
+  display: inline-flex
+  flex-direction: column
+  align-items: center
+
+.weather-icon
+  max-width: 50px
+
+.current
+  font-size: 1.1em
+  padding: .2em .5em
+  border-radius: .5em
+  background-color: hsl(0 100% 100% / .15)
+  box-shadow: 3px 3px 3px 1px hsl(0 100% 100% / .07)
