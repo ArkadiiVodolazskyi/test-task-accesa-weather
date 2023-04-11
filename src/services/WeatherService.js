@@ -1,6 +1,8 @@
+const VITE_WEATHERAPI_KEY = import.meta.env.VITE_WEATHERAPI_KEY;
+
 export default class WeatherService {
   constructor() {
-    this.apiKey = '28b6f11cef9849dbb7b204519230304'; // TODO: use env
+    this.apiKey = VITE_WEATHERAPI_KEY;
     this.baseURL = 'http://api.weatherapi.com/v1';
   }
 

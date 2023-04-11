@@ -260,7 +260,7 @@ export default {
   min-height: 100%
   grid-column: 1 / 1
   grid-row: 1 / 1
-  transition: opacity .15s ease-in-out
+  transition: opacity .35s .2s ease-in
   opacity: 0
 
 html[data-theme='light'] .bg-main
