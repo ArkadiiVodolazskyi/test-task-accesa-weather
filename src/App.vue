@@ -39,7 +39,7 @@ export default {
     getLanguage() {
       this.language = LanguageServiceAPI.language;
     },
-    async getWeekForecast(location, isFavourite = false) {
+    async getWeekForecast(location, isFavourite = false, isCurrent = false) {
       const weekForecast = await WeatherServiceAPI.getForecast(
         location,
         7,
@@ -49,7 +49,12 @@ export default {
       if (this.checkLocationUsed(weekForecast.location.name)) return;
 
       weekForecast.isFavourite = isFavourite;
-      this.forecasts.push(weekForecast);
+      if (isCurrent) {
+        weekForecast.isCurrent = true;
+        this.forecasts.unshift(weekForecast);
+      } else {
+        this.forecasts.push(weekForecast);
+      }
 
       this.updateActiveDay();
     },
@@ -111,14 +116,18 @@ export default {
     this.loadLocalFavourites();
     if (this.currentLocation) {
       const { lat, lng } = this.currentLocation;
-      this.getWeekForecast(`${lat}, ${lng}`);
+      this.getWeekForecast(
+        `${lat}, ${lng}`,
+        (isFavourite = false),
+        (isCurrent = true)
+      );
     }
   },
   watch: {
     currentLocation() {
       if (this.currentLocation) {
         const { lat, lng } = this.currentLocation;
-        this.getWeekForecast(`${lat}, ${lng}`);
+        this.getWeekForecast(`${lat}, ${lng}`, false, true);
       }
     },
     activeForecastIndex() {
@@ -148,6 +157,9 @@ export default {
     <div class="wrapper">
       <AddLocation @add-location="handleAddLocation" />
       <div class="locations">
+        <!-- TODO: test and add styles: if no forecasts -->
+        <!-- TODO: test and add styles: when forecast is loading -->
+        <!-- TODO: test and add styles: if geolocation is not enabled -->
         <LocationWeather
           v-for="(forecast, index) in forecasts"
           :forecast="forecast"
@@ -165,13 +177,13 @@ export default {
 
 <style lang="sass">
 .acessa-weather
-  height: 100vh
-  overflow: hidden
+  min-height: 100vh
+  overflow-x: hidden
   display: flex
   flex-direction: column
   align-items: center
   justify-content: center
-  padding: 3em
+  padding: 4em 3em 6em
   position: relative
 .wrapper
   width: 100%
@@ -197,6 +209,7 @@ export default {
   background-color: hsl(var(--acc-main))
   background: radial-gradient(circle at 10% 20%, hsl(var(--acc-main)) 0%, hsl(var(--acc-main-2)) 90%)
   position: absolute
+  inset: 0
   z-index: -1
   isolation: isolate
   width: 100%

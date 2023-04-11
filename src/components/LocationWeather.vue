@@ -63,7 +63,6 @@ export default {
 .location-weather
   display: flex
   flex-direction: column
-  gap: 1em
 .forecast
   overflow: hidden
   transition: opacity .3s .3s ease, max-height .4s ease-in-out
@@ -71,10 +70,13 @@ export default {
   opacity: 0
 .set-active::before
   transform: rotate(-90deg)
-[data-is-favourite='true']
+
+.location-weather[data-is-favourite='true']
   .toggle-favourite
     color: yellow
-[data-is-active='true']
+
+.location-weather[data-is-active='true']
+  gap: 1em
   .set-active
     color: green
     &::before

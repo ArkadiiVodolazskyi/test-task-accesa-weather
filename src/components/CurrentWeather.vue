@@ -16,7 +16,10 @@ export default {
   methods: {
     getFullLocation() {
       const { country, region, name } = this.forecast.location;
-      return `${country}, ${region}, ${name}`;
+      const locationFullName = `${country}, ${region}, ${name}`;
+      return this.forecast.isCurrent
+        ? `${locationFullName} (current)`
+        : locationFullName;
     },
     deleteLocationUp() {
       const locationName = this.forecast.location.name;
