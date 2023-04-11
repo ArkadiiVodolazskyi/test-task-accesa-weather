@@ -64,13 +64,15 @@ button
       color: red
 
 .weather-grid
-  max-width: 90%
+  max-width: 580px
   margin: 0 auto
   text-align: center
   display: grid
   grid-template-columns: repeat(7, 1fr)
   align-items: center
   gap: .5em
+  overflow-x: auto
+  padding: .5em
   & .temp
     font-size: 1.2em
     font-weight: 500

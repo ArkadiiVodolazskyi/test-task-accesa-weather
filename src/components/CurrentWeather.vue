@@ -91,4 +91,16 @@ export default {
   display: flex
   align-items: center
   gap: .5em
+
+@media (max-width: 650px)
+  .current-weather
+    grid-template-columns: repeat(2, 1fr)
+  .location
+    grid-column: span 2
+    display: flex
+    gap: 1em
+    align-items: flex-start
+    justify-content: space-between
+  .day-info
+    text-align: left
 </style>

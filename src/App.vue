@@ -183,7 +183,7 @@ export default {
   flex-direction: column
   align-items: center
   justify-content: center
-  padding: 4em 3em 6em
+  padding: 4em 3em 7em
   position: relative
 .wrapper
   width: 100%
@@ -219,6 +219,7 @@ export default {
   overflow: hidden
 .bg-main
   max-width: unset
+  min-height: 100%
   grid-column: 1 / 1
   grid-row: 1 / 1
   transition: opacity .15s ease-in-out
@@ -234,6 +235,12 @@ html[data-theme='dark'] .bg-main
     opacity: 0
   &[data-bg-type=night]
     opacity: 1
+
+@media (max-width: 650px)
+  .acessa-weather
+    padding-inline: 0
+  .wrapper
+    padding: 1em
 
 .app-title
   text-align: center

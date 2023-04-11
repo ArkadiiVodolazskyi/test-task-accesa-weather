@@ -77,6 +77,9 @@ export default {
 
 .location-weather[data-is-active='true']
   gap: 1em
+  .location-name
+    color: hsl(var(--acc-main-2))
+    filter: saturate(5)
   .set-active
     color: green
     &::before
@@ -84,4 +87,10 @@ export default {
   .forecast
     max-height: 400px
     opacity: 1
+
+@media (max-width: 650px)
+  .location-weather
+    padding-top: 1em
+    &:not(:first-of-type)
+      border-top: 1px solid var(--tx-main)
 </style>
