@@ -2,19 +2,18 @@
   <!-- TODO: show Spinner if forecastData is null -->
   <div
     class="location-weather"
-    :data-is-favourite="isFavourite"
     :data-is-active="isActive"
+    :data-is-favourite="forecast.isFavourite"
   >
     <CurrentWeather
       :forecast="forecast"
       :DateTimeFormatter="DateTimeFormatter"
+      @delete-location="catchDeleteLocationFromChild"
+      @favourite-location="catchToggleFavouriteFromChild"
+      @active-location="catchSetActiveFromChild"
     />
     <ForecastDay :hours="hours" :DateTimeFormatter="DateTimeFormatter" />
     <ForecastWeek :days="days" :DateTimeFormatter="DateTimeFormatter" />
-    <!-- TODO: move buttons to CurrentWeather -->
-    <button class="delete-location" @click="deleteLocation">✘</button>
-    <button class="toggle-favourite" @click="toggleFavourite">★</button>
-    <button class="set-active" @click="setActive">❯</button>
   </div>
 </template>
 
@@ -34,7 +33,6 @@ export default {
       DateTimeFormatter: null,
       days: [],
       hours: [],
-      isFavourite: this.forecast.isFavourite,
       // TODO: add isActive: active shows full forecast and its current weather and time specify the app theme
     };
   },
@@ -49,20 +47,13 @@ export default {
     this.hours = [...days[0].hour, ...days[1].hour];
   },
   methods: {
-    deleteLocation() {
-      const locationName = this.forecast.location.name;
-      confirm(
-        `Are you sure you want to stop watching weather in ${locationName}?`
-      ) && this.$emit('delete-location', locationName);
+    catchDeleteLocationFromChild(locationName) {
+      this.$emit('delete-location', locationName);
     },
-    toggleFavourite() {
-      const locationName = this.forecast.location.name;
-      const newFavouriteState = !this.isFavourite;
-      this.isFavourite = newFavouriteState;
+    catchToggleFavouriteFromChild(locationName, newFavouriteState) {
       this.$emit('favourite-location', locationName, newFavouriteState);
     },
-    setActive() {
-      const locationName = this.forecast.location.name;
+    catchSetActiveFromChild(locationName) {
       this.$emit('active-location', locationName);
     },
   },

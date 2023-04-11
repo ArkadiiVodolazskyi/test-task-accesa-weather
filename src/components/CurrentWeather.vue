@@ -18,15 +18,37 @@ export default {
       const { country, region, name } = this.forecast.location;
       return `${country}, ${region}, ${name}`;
     },
+    deleteLocationUp() {
+      const locationName = this.forecast.location.name;
+      confirm(
+        `Are you sure you want to stop watching weather in ${locationName}?`
+      ) && this.$emit('delete-location', locationName);
+    },
+    toggleFavouriteUp() {
+      const locationName = this.forecast.location.name;
+      const newFavouriteState = !this.forecast.isFavourite;
+      this.$emit('favourite-location', locationName, newFavouriteState);
+    },
+    setActiveUp() {
+      const locationName = this.forecast.location.name;
+      this.$emit('active-location', locationName);
+    },
   },
 };
 </script>
 
 <template>
   <div class="current-weather">
-    <h2 class="location-name">
-      <i>{{ getFullLocation() }}</i>
-    </h2>
+    <div class="location">
+      <h2 class="location-name">
+        <i>{{ getFullLocation() }}</i>
+      </h2>
+      <div class="manage-buttons">
+        <button class="delete-location" @click="deleteLocationUp">✘</button>
+        <button class="toggle-favourite" @click="toggleFavouriteUp">★</button>
+        <button class="set-active" @click="setActiveUp">❯</button>
+      </div>
+    </div>
     <div class="day-info">
       <p><strong>Today</strong></p>
       <p>{{ DateTimeFormatter.format(currentTime, 'weekday-time') }}</p>
