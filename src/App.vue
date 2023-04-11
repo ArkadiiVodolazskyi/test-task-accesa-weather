@@ -224,4 +224,8 @@ html[data-theme='dark'] .bg-main
 
 .app-title
   text-align: center
+.locations
+  display: flex
+  flex-direction: column
+  gap: 1em
 </style>

@@ -34,6 +34,35 @@ li
 a
   text-decoration: none
 
+button
+  border: none
+  border-radius: 5px
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  font-size: 1.5em
+  width: 1.2em
+  height: 1.2em
+  cursor: pointer
+  transition: background-color .2s ease, color .2s ease
+  color: var(--tx-main)
+  background-color: hsl(var(--acc-main-2))
+  box-shadow: 2px 2px 3px 2px hsl(var(--acc-main) / .4)
+  &.set-active::before
+    content: '▾'
+  &.toggle-favourite::before
+    content: '★'
+  &.delete-location::before
+    content: '✘'
+  &:hover
+    background-color: hsl(var(--acc-main))
+    &.set-active
+      color: green
+    &.toggle-favourite
+      color: yellow
+    &.delete-location
+      color: red
+
 .weather-grid
   max-width: 90%
   margin: 0 auto

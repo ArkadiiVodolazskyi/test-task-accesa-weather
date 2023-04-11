@@ -44,9 +44,9 @@ export default {
         <i>{{ getFullLocation() }}</i>
       </h2>
       <div class="manage-buttons">
-        <button class="delete-location" @click="deleteLocationUp">✘</button>
-        <button class="toggle-favourite" @click="toggleFavouriteUp">★</button>
-        <button class="set-active" @click="setActiveUp">❯</button>
+        <button class="set-active" @click="setActiveUp"></button>
+        <button class="toggle-favourite" @click="toggleFavouriteUp"></button>
+        <button class="delete-location" @click="deleteLocationUp"></button>
       </div>
     </div>
     <div class="day-info">
@@ -77,12 +77,11 @@ export default {
   align-items: center
   gap: .5em
 .location-name
-  p:first-of-type
-    padding: .3em
-  i
-    padding: .2em .6em
-    border-radius: .5em
-    background: linear-gradient(-135deg, hsl(var(--acc-main) / .8) 0%, hsl(var(--acc-main-2) / .8) 100%)
+  padding: .3em 0
+.manage-buttons
+  display: flex
+  align-items: center
+  gap: .3em
 .day-info
   text-align: right
 .time-info

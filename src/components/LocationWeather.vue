@@ -33,7 +33,6 @@ export default {
       DateTimeFormatter: null,
       days: [],
       hours: [],
-      // TODO: add isActive: active shows full forecast and its current weather and time specify the app theme
     };
   },
   created() {
@@ -65,10 +64,22 @@ export default {
   display: flex
   flex-direction: column
   gap: 1em
+.forecast
+  overflow: hidden
+  transition: opacity .3s .3s ease, max-height .4s ease-in-out
+  max-height: 0
+  opacity: 0
+.set-active::before
+  transform: rotate(-90deg)
 [data-is-favourite='true']
   .toggle-favourite
     color: yellow
 [data-is-active='true']
   .set-active
     color: green
+    &::before
+      transform: rotate(0)
+  .forecast
+    max-height: 400px
+    opacity: 1
 </style>
