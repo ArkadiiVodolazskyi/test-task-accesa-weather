@@ -3,7 +3,7 @@ const VITE_WEATHERAPI_KEY = import.meta.env.VITE_WEATHERAPI_KEY;
 export default class WeatherService {
   constructor() {
     this.apiKey = VITE_WEATHERAPI_KEY;
-    this.baseURL = 'http://api.weatherapi.com/v1';
+    this.baseURL = 'https://api.weatherapi.com/v1';
   }
 
   async getForecast(location, days = 1, type = 'forecast', lang = 'en') {
