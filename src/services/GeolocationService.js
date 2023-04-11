@@ -16,14 +16,11 @@ export default class GeolocationService {
   getGeoFail(err) {
     if (err.code === 1) {
       alert('Please, allow using your geoposition.');
-      // TODO: add quick links to browser settings
-      // f.e. Firefox: about:preferences#privacy
-      // Chrome: ...
     }
   }
 
-  getLocation(successCallback) {
-    navigator.geolocation.getCurrentPosition(successCallback, this.getGeoFail, {
+  getLocation(successCallback, failCallback = this.getGeoFail) {
+    navigator.geolocation.getCurrentPosition(successCallback, failCallback, {
       enableHighAccuracy: false,
       timeout: 3000,
       maximumAge: 1000 * 60 * 5,

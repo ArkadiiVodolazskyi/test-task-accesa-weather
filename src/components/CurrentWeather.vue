@@ -47,9 +47,15 @@ export default {
         <i>{{ getFullLocation() }}</i>
       </h2>
       <div class="manage-buttons">
-        <button class="set-active" @click="setActiveUp"></button>
-        <button class="toggle-favourite" @click="toggleFavouriteUp"></button>
-        <button class="delete-location" @click="deleteLocationUp"></button>
+        <button class="manage-button set-active" @click="setActiveUp"></button>
+        <button
+          class="manage-button toggle-favourite"
+          @click="toggleFavouriteUp"
+        ></button>
+        <button
+          class="manage-button delete-location"
+          @click="deleteLocationUp"
+        ></button>
       </div>
     </div>
     <div class="day-info">

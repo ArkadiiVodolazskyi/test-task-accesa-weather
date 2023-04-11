@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: show Spinner if forecastData is null -->
   <div
     class="location-weather"
     :data-is-active="isActive"

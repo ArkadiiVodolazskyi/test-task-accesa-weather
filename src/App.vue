@@ -22,19 +22,27 @@ export default {
       currentLocation: null, // By default, current user location is used for getting initial forecast
       forecasts: [], // Forecasts for each location, received from API
       activeForecastIndex: 0,
+      askedLocation: false,
     };
   },
   methods: {
     getLocation() {
-      GeolocationServiceAPI.getLocation((position) => {
-        const location = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          acc: position.coords.accuracy,
-          timestamp: position.timestamp,
-        };
-        this.currentLocation = location;
-      });
+      GeolocationServiceAPI.getLocation(
+        (position) => {
+          const location = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            acc: position.coords.accuracy,
+            timestamp: position.timestamp,
+          };
+          this.currentLocation = location;
+        },
+        (err) => {
+          if (err.code === 1) {
+            this.allowedLocation = false;
+          }
+        }
+      );
     },
     getLanguage() {
       this.language = LanguageServiceAPI.language;
@@ -52,6 +60,7 @@ export default {
       if (isCurrent) {
         weekForecast.isCurrent = true;
         this.forecasts.unshift(weekForecast);
+        this.askedLocation = true;
       } else {
         this.forecasts.push(weekForecast);
       }
@@ -108,6 +117,16 @@ export default {
       const themeName = isDay ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', themeName);
     },
+    noLocationProvided() {
+      this.askedLocation = true;
+      localStorage.setItem('locationAsked', true);
+    },
+    async checkLocationProvided() {
+      const locationAskedItem = localStorage.getItem('locationAsked');
+      if (!locationAskedItem) return;
+      const locationAsked = Boolean(locationAskedItem);
+      this.askedLocation = locationAsked;
+    },
   },
   created() {
     this.getLocation();
@@ -122,6 +141,8 @@ export default {
         (isCurrent = true)
       );
     }
+
+    this.checkLocationProvided();
   },
   watch: {
     currentLocation() {
@@ -138,7 +159,7 @@ export default {
 </script>
 
 <template>
-  <main class="acessa-weather">
+  <main class="acessa-weather" :data-locations="Boolean(forecasts.length)">
     <div class="backgrounds">
       <img
         class="bg-main"
@@ -155,11 +176,26 @@ export default {
     </div>
     <Header />
     <div class="wrapper">
+      <div class="notification" v-if="askedLocation === false">
+        <p>
+          To get a forecast for your current location, you will need to allow
+          using your Location in your browser settings.
+        </p>
+        <p>
+          <b>Firefox</b>: Privacy & Security (about:preferences#privacy) -
+          Permissions - Location - Settings... - 'Block new requests asking to
+          access your location' - Uncheck
+        </p>
+        <p>
+          <b>Chrome</b>: Location (chrome://settings/content/location) - 'Sites
+          can ask for your location' - Check
+        </p>
+        <button class="skip-location" @click="noLocationProvided">
+          I do not want a forecast for my location
+        </button>
+      </div>
       <AddLocation @add-location="handleAddLocation" />
       <div class="locations">
-        <!-- TODO: test and add styles: if no forecasts -->
-        <!-- TODO: test and add styles: when forecast is loading -->
-        <!-- TODO: test and add styles: if geolocation is not enabled -->
         <LocationWeather
           v-for="(forecast, index) in forecasts"
           :forecast="forecast"
@@ -185,6 +221,9 @@ export default {
   justify-content: center
   padding: 4em 3em 7em
   position: relative
+  &[data-locations='true']
+    .wrapper
+      gap: 1.5em
 .wrapper
   width: 100%
   max-width: 800px
@@ -195,7 +234,6 @@ export default {
   position: relative
   display: flex
   flex-direction: column
-  gap: 1.5em
   &::before
     content: ''
     position: absolute
