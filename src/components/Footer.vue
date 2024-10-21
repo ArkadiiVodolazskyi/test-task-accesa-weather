@@ -33,6 +33,7 @@ footer
     .author-avatar
       transform: scale(1.1)
 .author-avatar
+  border-radius: 50%
   transition: transform .2s ease
 .author-link
   font-style: oblique
